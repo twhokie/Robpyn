@@ -48,7 +48,22 @@ def editGroup():
                     newValues = `jsonPosted[newQueue]['minMemory']` + " mb," + `jsonPosted[newQueue]["minVcores"]` +"vcores"
                     minResources.text = newValues
                     tree.write('fair-scheduler-new.xml') 
-    return json.dumps(jsonPosted)
+    return "{\"success\" : True}"
+
+@app.route('/groups/create',methods=["POST"])
+def createGroup():
+    jsonPosted = request.get_json(force=True)
+    tree = ET.parse('fair-scheduler.xml')
+    root = tree.getroot()
+    for newQueue in jsonPosted:
+        newQueueElem = ET.SubElement(root, 'queue',attrib={'name':newQueue})
+        newMinResourcesElem = ET.SubElement(newQueueElem, 'minResources')
+        newMinResourcesElem.text = `jsonPosted[newQueue]['minMemory']` + " mb," + `jsonPosted[newQueue]["minVcores"]` +"vcores"
+        newWeightElem = ET.SubElement(newQueueElem, 'weight')
+        newWeightElem.text = `jsonPosted[newQueue]['weight']` 
+        #root.append(newQueueElem)
+    tree.write('fair-scheduler-new.xml') 
+    return "{\"success\" : True}"
 
 if __name__ == '__main__':
     app.run(debug = True)
