@@ -37,7 +37,17 @@ def readGroups():
 @app.route('/groups/update',methods=["POST"])
 def editGroup():
     jsonPosted = request.get_json(force=True)
-    print jsonPosted
+    tree = ET.parse('fair-scheduler.xml')
+    root = tree.getroot()
+    for newQueue in jsonPosted:
+        print newQueue
+        for queue in root.findall('queue'):
+            if queue.get('name') == newQueue:
+                minResources = queue.find('minResources')
+                if minResources is not None:
+                    newValues = `jsonPosted[newQueue]['minMemory']` + " mb," + `jsonPosted[newQueue]["minVcores"]` +"vcores"
+                    minResources.text = newValues
+                    tree.write('fair-scheduler-new.xml') 
     return json.dumps(jsonPosted)
 
 if __name__ == '__main__':
