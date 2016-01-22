@@ -61,7 +61,18 @@ def createGroup():
         newMinResourcesElem.text = `jsonPosted[newQueue]['minMemory']` + " mb," + `jsonPosted[newQueue]["minVcores"]` +"vcores"
         newWeightElem = ET.SubElement(newQueueElem, 'weight')
         newWeightElem.text = `jsonPosted[newQueue]['weight']` 
-        #root.append(newQueueElem)
+    tree.write('fair-scheduler-new.xml') 
+    return "{\"success\" : True}"
+
+@app.route('/groups/delete',methods=["POST"])
+def deleteGroup():
+    jsonPosted = request.get_json(force=True)
+    tree = ET.parse('fair-scheduler.xml')
+    root = tree.getroot()
+    for newQueue in jsonPosted:
+        for queue in root.findall('queue'):
+            if queue.get('name') == newQueue:
+                root.remove(queue)
     tree.write('fair-scheduler-new.xml') 
     return "{\"success\" : True}"
 
