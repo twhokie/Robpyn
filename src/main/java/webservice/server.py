@@ -4,11 +4,13 @@ Created on Jan 22, 2016
 @author: Thomas
 '''
 
-from flask.app import Flask
-from flask import request
-import xml.etree.ElementTree as ET
 import json
 
+from flask import request
+from flask.app import Flask
+import xml.etree.ElementTree as ET
+
+ 
 app = Flask(__name__)
 
 @app.route('/')
@@ -71,7 +73,7 @@ def deleteGroup():
     root = tree.getroot()
     for newQueue in jsonPosted:
         for queue in root.findall('queue'):
-            if queue.get('name') == newQueue:
+            if queue.get('name') == newQueue: 
                 root.remove(queue)
     tree.write('fair-scheduler-new.xml') 
     return "{\"success\" : True}"
